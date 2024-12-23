@@ -1,0 +1,3 @@
+[submodule "server/lib/decaf-compiler"]
+	path = server/lib/decaf-compiler
+	url = https://github.com/GMascetti04/Decaf-Compiler.git
