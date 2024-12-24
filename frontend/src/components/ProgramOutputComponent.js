@@ -28,8 +28,10 @@ const ProgramOutputComponent = ({ assemblyOutput, commandLineOutput, otherConten
       </Tabs>
 
     
-      <Box>
-        {selectedTab === 0 && (
+      <Box >
+
+        {selectedTab === 0 && assemblyOutput !== null && (
+            
             <MonacoEditor
                 height="500px"
                 width="100%"
@@ -38,11 +40,22 @@ const ProgramOutputComponent = ({ assemblyOutput, commandLineOutput, otherConten
                 theme="vs-dark" 
                 options={{domReadOnly: true}}
             />
+
+          
         )}
-        {selectedTab === 1 && (
-            <Typography variant="body1" sx={{whiteSpace: 'pre-line'}}>
+
+        {selectedTab === 1 && assemblyOutput !== null && (
+          <Typography variant="body1" sx={{whiteSpace: 'pre-line'}}>
             {commandLineOutput}
-          </Typography> 
+          </Typography>
+            
+        )}
+         {selectedTab === 0 && assemblyOutput === null && (
+
+          <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
+            Press compile button to see output
+          </Typography>
+
         )}
         
       </Box>

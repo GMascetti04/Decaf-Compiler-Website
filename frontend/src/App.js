@@ -27,9 +27,11 @@ const CompilerFrontend = () => {
   const [sourceCode, setSourceCode] = useState(default_program);
   
 
-  const [compilerOutput, setCompilerOutput] = useState("");
-  const [assemblyOutput, setAssemblyOutput] = useState("");
+  const [compilerOutput, setCompilerOutput] = useState(null);
+  const [assemblyOutput, setAssemblyOutput] = useState(null);
   const [displayErrorModal, setDisplayErrorModal] = useState(false);
+
+  const [waitingForCompile, setWaitingForCompile] = useState(false);
 
 
   const [files, setFiles] = useState([
@@ -43,7 +45,21 @@ const CompilerFrontend = () => {
   const [selectedFile, setSelectedFile] = useState('file1.decaf');
 
   const handleDeleteSelected = () => {
-    alert("Delete file not implemented yet!")
+    if(files.length === 1) {
+      alert("Must have one file!");
+    } else {
+      let indexToRemove = files.findIndex((file) => file.name === selectedFile)
+      if(indexToRemove == -1) {
+        alert("error")
+      }
+      let newSelected = files[indexToRemove == 0 ? 1 : indexToRemove - 1].name
+      let newSourceCode = files[indexToRemove == 0 ? 1 : indexToRemove - 1].sourceCode;
+      setFiles((prevFiles) => prevFiles.filter((_, index) => index !== indexToRemove));
+      setSelectedFile(newSelected);
+      setSourceCode(newSourceCode);
+      
+    }
+    
   }
 
   const handleNewFile = () => {
@@ -56,28 +72,31 @@ const CompilerFrontend = () => {
     setFiles((prevFiles) => [...prevFiles, newFile])
   }
 
+  const handleRenameSelected = (newName) => {
+    setFiles((prevFiles) =>
+      prevFiles.map((file) =>
+        file.name === selectedFile ? { ...file, name: newName } : file
+      )
+    );
+    setSelectedFile(newName);
+  }
+
   
   const handleCompile = async () => {
     const endpoint = "https://flask-fire-637551824687.us-central1.run.app/compile";
     const payload = { sourceCode };
 
+    setWaitingForCompile(true);
+
     try {
       const response = await axios.post(endpoint, payload);
       setAssemblyOutput(response.data.output);
       setCompilerOutput(response.data.res);
+      setWaitingForCompile(false);
 
     } catch (error) {
-      if (error.response) {
-        console.error("Error code:", error.response.status);
-        console.error("Error message:", error.response.data); 
-      } else if (error.request) {
-        setDisplayErrorModal(true);
-        console.error("No response received:", error.request);
-      } else {
-        console.error("Error setting up the request:", error.message);
-        setDisplayErrorModal(true);
-      }
-      
+      setWaitingForCompile(false);
+      setDisplayErrorModal(true);  
     }
   };
 
@@ -107,7 +126,9 @@ const CompilerFrontend = () => {
            setSelectedFile={changeSelectedFile}
            onCompile={handleCompile}
            onNewFile={handleNewFile}
-           onDeleteSelected={handleDeleteSelected} />
+           onDeleteSelected={handleDeleteSelected}
+           onRenameSelected={handleRenameSelected}
+           displayLoading={waitingForCompile} />
 
           <CodeEditorComponent sourceCode={sourceCode} setSourceCode={setSourceCode}></CodeEditorComponent>
 
