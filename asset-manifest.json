@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Decaf-Compiler-Website/static/css/main.e6c13ad2.css",
-    "main.js": "/Decaf-Compiler-Website/static/js/main.2f030517.js",
+    "main.js": "/Decaf-Compiler-Website/static/js/main.8621b3f5.js",
     "static/js/488.e75445ad.chunk.js": "/Decaf-Compiler-Website/static/js/488.e75445ad.chunk.js",
     "index.html": "/Decaf-Compiler-Website/index.html",
     "main.e6c13ad2.css.map": "/Decaf-Compiler-Website/static/css/main.e6c13ad2.css.map",
-    "main.2f030517.js.map": "/Decaf-Compiler-Website/static/js/main.2f030517.js.map",
+    "main.8621b3f5.js.map": "/Decaf-Compiler-Website/static/js/main.8621b3f5.js.map",
     "488.e75445ad.chunk.js.map": "/Decaf-Compiler-Website/static/js/488.e75445ad.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.2f030517.js"
+    "static/js/main.8621b3f5.js"
   ]
 }
