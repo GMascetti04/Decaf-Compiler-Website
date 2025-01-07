@@ -3,6 +3,9 @@ from flask_cors import CORS
 import subprocess
 import json
 import os
+import uuid
+import shutil
+import glob
 
 app = Flask(__name__)
 CORS(app)
@@ -21,22 +24,42 @@ def compile():
         if not source_code:
             return jsonify({"error" : "no source code"}),400
         
-        process = subprocess.Popen(
-            ['python', './lib/decaf-compiler/compiler/decaf_compiler.py'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True)
+        folder_name : str = str(uuid.uuid4())
+        
+        os.makedirs(folder_name, exist_ok=True)
+        
+        os.makedirs(os.path.join(folder_name,'build'), exist_ok=True)
+        
+        with open(os.path.join(folder_name, 'inFile.decaf'), 'w') as inFile:
+            inFile.write(source_code)
         
         
+        command = ['python3', './lib/decaf-compiler/compiler/decaf_compiler.py', '--infile', os.path.join(folder_name, 'inFile.decaf'),'--outdir', os.path.join(folder_name) , '--save-builds']
+        result = subprocess.run(command, capture_output=True, text=True, input='')
+                    
+        ASTdata = None
+        TACdata = None
+        STdata = None
         
-        output, error = process.communicate(input=source_code)
+        if result.returncode == 0:
+            
+            with open(os.path.join(folder_name, 'build','ast.json'), 'r') as file:
+                ASTdata = json.load(file)
+                
+            with open(os.path.join(folder_name, 'build', 'A3.tac'), 'r') as file:
+                TACdata = file.read()
+                
+            with open(os.path.join(folder_name, 'build', 'st.json')) as file:
+                STdata = json.load(file)
+                    
         
-        app.logger.error(output)
+        shutil.rmtree(folder_name)
         
-        return jsonify({'output' : output, 'returncode' : process.returncode, 'res' : error}), 200
+        return jsonify({'stdout' : result.stdout, 'returncode' : result.returncode, 'stderr' : result.stderr, 'ast' : ASTdata, 'ir' : TACdata, 'st' : STdata}), 200
     
     except Exception as e:
+        
+        app.logger.error(str(e))
         return jsonify({'error' : str(e)}), 500
 
 
