@@ -1,13 +1,14 @@
 import React from "react";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography } from "@mui/material";
 
-const NetworkErrorModal = ({ open, onClose }) => {
+const NetworkErrorModal = ({ open, onClose, errorMSG }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Network Error</DialogTitle>
       <DialogContent>
         
         <p>There was an error connecting to the compiler endpoint</p>
+        <Typography>{errorMSG}</Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">

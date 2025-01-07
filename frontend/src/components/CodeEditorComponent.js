@@ -1,7 +1,7 @@
 import React from "react";
 import MonacoEditor from "@monaco-editor/react";
 
-const keywords = ['class', 'public', 'int', 'static', 'void', 'return']
+const keywords = ['class', 'public', 'int', 'static', 'void', 'return', 'if', 'for']
 
 const CodeEditorComponent = ({sourceCode, setSourceCode}) => {
 
